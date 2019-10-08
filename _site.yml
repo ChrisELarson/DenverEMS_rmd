@@ -1,0 +1,9 @@
+name: "denver-ems"
+output_dir: "docs"
+navbar:
+  title: "Denver EMS"
+  left:
+    - text: "About"
+      href: index.html
+    - text: "Call Volume Analysis"
+      href: call-volume.html
