@@ -1,0 +1,7 @@
+---
+title: "About"
+---
+
+Analysis of emergency medical services (EMS) call volumes for the Denver Health Paramedic Division.
+
+Predictive modeling using weather conditions and home games for professional sports teams
