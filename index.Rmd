@@ -6,5 +6,5 @@ Data analysis and modeling done using [R statistical software](https://www.r-pro
 Analysis of the Denver Health Paramedics call volumes from 2010 - 2018.  The available call volume data includes the total ammount of 911 ambulance calls over any given hour within the specified years. For example, there were 22 calls in the 1300 hour on March 31st 2014.
 
 Predictive modeling using weather data and home games for professional sports teams to see if these events have any predictive power in determing the number of EMS calls. The weather factors examined were temperature and precipitation.  Temperature for each hour period was determined by rounding temperature values to the nearest hour and taking the mean value over the hour.  Precipitation determined as a yes or no value, yes if there was any precipitation over the hour, no otherwise.
-
-This website is intended as a more visually appealing way to show some of the analysis performed for this project.  Supplemental information including more coding used and the final data set constucted can be found on GitHub [here](https://github.com/ChrisELarson/DenverEMS).
+***
+This website is intended as a more visually appealing way to show some of the analysis performed for this project.  Supplemental information including more coding used, the power point for presentation, and the final data set constucted can be found on GitHub [here](https://github.com/ChrisELarson/DenverEMS).  

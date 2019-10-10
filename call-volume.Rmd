@@ -8,5 +8,10 @@ output:
 According to the US Census Bureau the population in the city of Denver has a growth rate of  1.6\% per year and the city has grown by just under 20\% since 2010. As a natural consequence of this growth there has also been a steady increase in EMS calls.  
 
 ```{r call-by-year}
+#Multiple different lines graph, year/month/weekly/daily volumes
+#table underneath with raw numbers
 ```
 
+This growth in call volume will lead to an increased need for emergency medical personnel and the need to place that personnel in a proper schedule.  There are clear trends in the volume of EMS calls by hour of the day and day of the week.
+
+```{r by-day-hour}
