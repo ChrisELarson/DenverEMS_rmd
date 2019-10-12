@@ -24,6 +24,7 @@
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -306,10 +307,150 @@ $(document).ready(function () {
 </div>
 
 
-<p>According to the US Census Bureau the population in the city of Denver has a growth rate of 1.6% per year and the city has grown by just under 20% since 2010. As a natural consequence of this growth there has also been a steady increase in EMS calls.</p>
-<pre class="r"><code>#Multiple different lines graph, year/month/weekly/daily volumes
-#table underneath with raw numbers</code></pre>
-<p>This growth in call volume will lead to an increased need for emergency medical personnel and the need to place that personnel in a proper schedule. There are clear trends in the volume of EMS calls by hour of the day and day of the week.</p>
+<pre class="r"><code># Total calls in a given year with calculated change in percent from previous year
+calls_per_year&lt;- call_data %&gt;%
+  filter(Year != 2019) %&gt;% #Filtered out, only partial data
+  group_by(Year) %&gt;% 
+  summarise(calls = sum(calls)) %&gt;% 
+  mutate(perc_change = (calls - lag(calls))/lag(calls))
+
+# Minimum and maximum percentage change
+min_max &lt;-calls_per_year %&gt;% 
+  filter(perc_change != &#39;NA&#39;)
+a &lt;- round(max(min_max$perc_change), 4) * 100
+b &lt;- round(min(min_max$perc_change), 4) * 100
+
+# Overall percentage change in calls from 2011 - 2018
+x &lt;-calls_per_year %&gt;% 
+  filter(Year == &#39;2011&#39; | Year == &#39;2018&#39;) %&gt;% 
+  mutate(perc_change = (calls - lag(calls))/lag(calls)) %&gt;% 
+  select(perc_change) %&gt;% 
+  filter(perc_change != &#39;NA&#39;)
+overall &lt;- round(x$perc_change,4) * 100</code></pre>
+<p>According to the US Census Bureau the population in the city of Denver has a growth rate of 1.6% per year and the city has grown by just under 20% since 2010. As a natural consequence of this growth there has also been a steady increase in EMS calls. While the year on year percentage change in call volumes has fluctuated from a maximum growth of 10.77% in 2014 to a minimum rate of 0.16% in 2018, every year has seen positive growth and there has been an overall 39.71% increase in calls from 2011 - 2018.</p>
+<style type="text/css">
+.twoC {width: 100%}
+.clearer {clear: both}
+.twoC .table {max-width: 25%; float: right}
+.twoC img {max-width: 75%; float: left}
+</style>
+<div class = "twoC">
+
+<pre class="r"><code># Commented out code generated the table, code not otherwise shown
+
+#call_data %&gt;% 
+#  group_by(Year) %&gt;% 
+#  filter(Year != 2019) %&gt;% 
+#  summarise(Calls = sum(calls)) %&gt;% 
+#  kable(format = &#39;html&#39;, escape = F) %&gt;% 
+#  kable_styling(&#39;striped&#39;, full_width = T) %&gt;% 
+#  add_header_above(c(&quot; &quot;, &quot;Total Calls &quot;))
+
+# Plot of percentage change in total calls
+calls_per_year %&gt;%
+ replace_na(list(perc_change = 0)) %&gt;%  #No percentage change in starting year
+ ggplot(aes(x = Year, y = perc_change)) +
+  ggtitle(&quot;Percentage Change in Call Volumes&quot;, subtitle = &#39;Year on Year&#39;) + 
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5)) +
+  ylab(NULL) +
+  geom_col(fill = &#39;light blue&#39;, color = &#39;black&#39;) +
+  scale_y_continuous(labels = scales::percent) </code></pre>
+<p><img src="call-volume_files/figure-html/perc_plot-1.png" width="672" /></p>
+<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="border-bottom:hidden" colspan="1">
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="1">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Total Calls
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Year
+</th>
+<th style="text-align:right;">
+Calls
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+2011
+</td>
+<td style="text-align:right;">
+78262
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2012
+</td>
+<td style="text-align:right;">
+85088
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2013
+</td>
+<td style="text-align:right;">
+87835
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2014
+</td>
+<td style="text-align:right;">
+97293
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2015
+</td>
+<td style="text-align:right;">
+100458
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2016
+</td>
+<td style="text-align:right;">
+106292
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2017
+</td>
+<td style="text-align:right;">
+109164
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2018
+</td>
+<td style="text-align:right;">
+109342
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="clearer">
+
+</div>
+<p>The growth rate in call volumes has slowed in recent years with a negligable increase from 2017 to 2018. Whether or not this will be an ongoing trend remains to be seen. The fact remains there has been an increase in call volume every year since 2011.</p>
+<p>This growth in call volume will lead to an increased need for emergency medical personnel and the need to schedule that personnel efficiently to mitigate the needs of the city. There are clear trends in the volume of EMS calls by hour of the day and day of the week.</p>
+<pre class="r"><code># Analysis</code></pre>
 
 
 
