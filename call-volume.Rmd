@@ -4,14 +4,106 @@ output:
   html_document:
     code_folding: hide
 ---
+```{r setup, include=FALSE}
+# Libraries and loading data
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+library(kableExtra) #nicer tables
 
-According to the US Census Bureau the population in the city of Denver has a growth rate of  1.6\% per year and the city has grown by just under 20\% since 2010. As a natural consequence of this growth there has also been a steady increase in EMS calls.  
-
-```{r call-by-year}
-#Multiple different lines graph, year/month/weekly/daily volumes
-#table underneath with raw numbers
+load("C:/Users/ADMIN/Desktop/GitRepos/DenverEMS/call_data.Rdata")
 ```
 
-This growth in call volume will lead to an increased need for emergency medical personnel and the need to place that personnel in a proper schedule.  There are clear trends in the volume of EMS calls by hour of the day and day of the week.
+```{r captions, include=FALSE}
+library(captioner)
+
+fig <- captioner(prefix = "Figure")
+tab <- captioner(prefix = "Table")
+
+# List of Figure captions
+fig('perc_change', "% change in call volume")
+
+# List of Table Captions
+tab('vol_tot', "Total Calls by Year")
+
+# assigning captions for recall in fig.cap =
+plot1 <- fig('perc_change')
+
+# captions for Tables
+tab1 <- tab('vol_tot')
+```
+
+```{r percentages}
+# Total calls in a given year with calculated change in percent from previous year
+calls_per_year<- call_data %>%
+  filter(Year != 2019) %>% #Filtered out, only partial data
+  group_by(Year) %>% 
+  summarise(calls = sum(calls)) %>% 
+  mutate(perc_change = (calls - lag(calls))/lag(calls))
+
+# Minimum and maximum percentage change
+min_max <-calls_per_year %>% 
+  filter(perc_change != 'NA')
+a <- round(max(min_max$perc_change), 4) * 100
+b <- round(min(min_max$perc_change), 4) * 100
+
+# Overall percentage change in calls from 2011 - 2018
+x <-calls_per_year %>% 
+  filter(Year == '2011' | Year == '2018') %>% 
+  mutate(perc_change = (calls - lag(calls))/lag(calls)) %>% 
+  select(perc_change) %>% 
+  filter(perc_change != 'NA')
+overall <- round(x$perc_change,4) * 100
+```
+According to the US Census Bureau the population in the city of Denver has a growth rate of  1.6\% per year and the city has grown by just under 20\% since 2010. As a natural consequence of this growth there has also been a steady increase in EMS calls.  While the year on year percentage change in call volumes has fluctuated from a maximum growth of `r a`\% in 2014 to a minimum rate of `r b`\% in 2018, every year has seen positive growth and there has been an overall `r overall`\% increase in calls from 2011 - 2018.
+
+<style type="text/css">
+.twoC {width: 100%}
+.clearer {clear: both}
+.twoC .table {max-width: 25%; float: right}
+.twoC img {max-width: 75%; float: left}
+</style>
+
+<div class = "twoC">
+```{r perc_plot}
+# Commented out code generated the table, code not otherwise shown
+
+#call_data %>% 
+#  group_by(Year) %>% 
+#  filter(Year != 2019) %>% 
+#  summarise(Calls = sum(calls)) %>% 
+#  kable(format = 'html', escape = F) %>% 
+#  kable_styling('striped', full_width = T) %>% 
+#  add_header_above(c(" ", "Total Calls "))
+
+# Plot of percentage change in total calls
+calls_per_year %>%
+ replace_na(list(perc_change = 0)) %>%  #No percentage change in starting year
+ ggplot(aes(x = Year, y = perc_change)) +
+  ggtitle("Percentage Change in Call Volumes", subtitle = 'Year on Year') + 
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5)) +
+  ylab(NULL) +
+  geom_col(fill = 'light blue', color = 'black') +
+  scale_y_continuous(labels = scales::percent) 
+```
+
+
+```{r volume totals, results='asis', echo=FALSE}
+call_data %>% 
+  group_by(Year) %>% 
+  filter(Year != 2019) %>% 
+  summarise(Calls = sum(calls)) %>% 
+  kable(format = 'html', escape = F) %>% 
+  kable_styling('striped', full_width = T) %>% 
+  add_header_above(c(" ", "Total Calls "))
+```
+</div>
+<div class="clearer"></div>
+The growth rate in call volumes has slowed in recent years with a negligable increase from 2017 to 2018.  Whether or not this will be an ongoing trend remains to be seen. The fact remains there has been an increase in call volume every year since 2011.
+
+This growth in call volume will lead to an increased need for emergency medical personnel and the need to schedule that personnel efficiently to mitigate the needs of the city.  There are clear trends in the volume of EMS calls by hour of the day and day of the week.
 
 ```{r by-day-hour}
+# Analysis
+```
