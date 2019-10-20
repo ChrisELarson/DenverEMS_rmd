@@ -100,10 +100,37 @@ call_data %>%
 ```
 </div>
 <div class="clearer"></div>
+
 The growth rate in call volumes has slowed in recent years with a negligable increase from 2017 to 2018.  Whether or not this will be an ongoing trend remains to be seen. The fact remains there has been an increase in call volume every year since 2011.
 
-This growth in call volume will lead to an increased need for emergency medical personnel and the need to schedule that personnel efficiently to mitigate the needs of the city.  There are clear trends in the volume of EMS calls by hour of the day and day of the week.
+This growth in call volume will lead to an increased need for emergency medical personnel and the need to schedule that personnel efficiently to mitigate the needs of the city.
 
-```{r by-day-hour}
-# Analysis
+```{r by-month-year, fig.align='center'}
+
+# Creates a table with total calls in a given month for each year (not including partial 2019 data)
+month_year <- call_data %>%
+  mutate(year = format(Date, "%Y"), month = format(Date, "%m")) %>% 
+  filter(year != '2019') %>% 
+  group_by(year, month) %>% 
+  summarise(calls = sum(calls))
+
+# Changing variable types for plotting.  Year as the factor, month as numeric so ggplot knows to connect lines between months
+month_year$year <- factor(month_year$year)
+month_year$month <- as.numeric(month_year$month)
+
+# Plotting calls by month per year, note year is the factor for coloring the lines
+month_year_plot <- month_year %>% 
+  ggplot() + 
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5)) +
+  geom_line(aes(x = month, y = calls, color = year)) +
+  scale_x_continuous(breaks = 1:12, labels = c(
+                       "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                       "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) +
+  ggtitle("Total Calls Per Month", subtitle = "Years 2011-2018") +
+  xlab("Month") +
+  ylab("Total Calls")
+month_year_plot
 ```
+<br>
+There are clear seasonal trends in call volumes which could lead to difficulty in optimizing personnel.  There is a clear need for increased staffing in the spring and summer months with a decrease in call volume in the fall and winter months.
