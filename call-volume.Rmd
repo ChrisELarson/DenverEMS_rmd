@@ -10,27 +10,9 @@ library(tidyverse)
 library(ggplot2)
 library(plotly)
 library(kableExtra) #nicer tables
+library(shiny)
 
 load("C:/Users/ADMIN/Desktop/GitRepos/DenverEMS/call_data.Rdata")
-```
-
-```{r captions, include=FALSE}
-library(captioner)
-
-fig <- captioner(prefix = "Figure")
-tab <- captioner(prefix = "Table")
-
-# List of Figure captions
-fig('perc_change', "% change in call volume")
-
-# List of Table Captions
-tab('vol_tot', "Total Calls by Year")
-
-# assigning captions for recall in fig.cap =
-plot1 <- fig('perc_change')
-
-# captions for Tables
-tab1 <- tab('vol_tot')
 ```
 
 ```{r percentages}
@@ -77,7 +59,7 @@ According to the US Census Bureau the population in the city of Denver has a gro
 #  add_header_above(c(" ", "Total Calls "))
 
 # Plot of percentage change in total calls
-calls_per_year %>%
+cpy_plot <- calls_per_year %>%
  replace_na(list(perc_change = 0)) %>%  #No percentage change in starting year
  ggplot(aes(x = Year, y = perc_change)) +
   ggtitle("Percentage Change in Call Volumes", subtitle = 'Year on Year') + 
@@ -86,6 +68,7 @@ calls_per_year %>%
   ylab(NULL) +
   geom_col(fill = 'light blue', color = 'black') +
   scale_y_continuous(labels = scales::percent) 
+cpy_plot
 ```
 
 
@@ -101,9 +84,9 @@ call_data %>%
 </div>
 <div class="clearer"></div>
 
-The growth rate in call volumes has slowed in recent years with a negligable increase from 2017 to 2018.  Whether or not this will be an ongoing trend remains to be seen. The fact remains there has been an increase in call volume every year since 2011.
+The growth rate in call volumes has slowed in recent years with a negligable increase from 2017 to 2018.  Whether or not this will be an ongoing trend remains to be seen. The fact remains there has been an increase in call volumes every year since 2011.
 
-This growth in call volume will lead to an increased need for emergency medical personnel and the need to schedule that personnel efficiently to mitigate the needs of the city.
+This growth in call volume will lead to an increased need for emergency medical personnel and the need to schedule that personel efficiently to mitigate the needs of the city.
 
 ```{r by-month-year, fig.align='center'}
 
@@ -130,7 +113,28 @@ month_year_plot <- month_year %>%
   ggtitle("Total Calls Per Month", subtitle = "Years 2011-2018") +
   xlab("Month") +
   ylab("Total Calls")
-month_year_plot
+div(ggplotly(month_year_plot))  #the div() wrapper from shiny keeps plot centered.  fig.align off with plotly
+```
+
+```{r mean-per-month}
+# All calculations and manipulation must be done before transposing for kable output
+mean_per_month <- month_year %>% 
+  group_by(month) %>% 
+  summarise('Avg. Calls' = round(mean(calls), 0)) %>%
+  # Change month from dbl to factor for naming abbreviated months instead of 1:12
+  mutate_at(vars(month), list(factor), labels = c('Jan', 'Feb', 'Mar', 'Apr', 
+                                                  'May', 'Jun', 'Jul', 'Aug', 
+                                                  'Sep', 'Oct', 'Nov', 'Dec')) %>% 
+  rename(' ' = month) %>% 
+  t() %>% # transpose the table to get the months horizontial                                          
+  kable(format = 'html') %>% 
+  kable_styling('striped')
+mean_per_month
 ```
 <br>
-There are clear seasonal trends in call volumes which could lead to difficulty in optimizing personnel.  There is a clear need for increased staffing in the spring and summer months with a decrease in call volume in the fall and winter months.
+There are clear seasonal trends in call volumes which could lead to difficulty in optimizing personnel.  There is a clear increase in call volumes during the summer months which would suggest an uptick in staffing for that period is appropriate.  As staffing paramedics on a seasonal basis is an unrealistic goal, either setting minimum staffing levels based on the busiest months or expansion of the part time employee pool are potential options.
+
+Minimum staffing levels based on the busiest months is probably ideal, however you would only need those employees for the summer months.  The remaining nine months of the year would potentially be overstaffed leading to increased overhead in salary and benefits.  The workload for individual employees would be decreased in the slower months of the year which could lead to an increase in employee morale.
+
+Expanding the pool of available part time employees increases the chances of availabilty to fill open shifts, particularly during the busiest times of the year.  There is less associated overhead as employees are only paid for hours worked with minimal benefit considerations.  To maintain a large intermittent employee population there would potentially need to be a relaxing of current rules that dictate the amount of hours required to work in a specific time period. One of the possible drawbacks of large numbers of part time employees as a solution to increased call volumes include the chance that there aren't enough employees available or willing to cover the necessary shifts to meet demand. 
+
