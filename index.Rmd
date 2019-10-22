@@ -140,7 +140,7 @@ mean_per_month <- month_year %>%
 mean_per_month
 ```
 <br>
-There are clear seasonal trends in call volumes which could lead to difficulty in optimizing personnel.  There is a clear increase in call volumes during the summer months which would suggest an uptick in staffing for that period is appropriate.  As staffing paramedics on a seasonal basis is an unrealistic goal, either setting minimum staffing levels based on the busiest months or expansion of the part time employee pool are potential options.
+There are clear seasonal trends in call volumes which could lead to difficulty in optimizing personnel.  Call volumes increase during the summer months which would suggest an uptick in staffing for that period is appropriate.  As staffing paramedics on a seasonal basis is an unrealistic goal, either setting minimum staffing levels based on the busiest months or expansion of the part time employee pool are potential options.
 
 Minimum staffing levels based on the busiest months is probably ideal, however you would only need those employees for the summer months.  The remaining nine months of the year would potentially be overstaffed leading to increased overhead in salary and benefits.  The workload for individual employees would be decreased in the slower months of the year which could lead to an increase in employee morale.
 
