@@ -48,7 +48,7 @@ According to the US Census Bureau the population in the city of Denver has a gro
 
 <div class = "twoC">
 ```{r perc_plot}
-# Commented out code generated the table, code not otherwise shown
+# Commented out code generated the table, not otherwise shown
 
 #call_data %>% 
 #  group_by(Year) %>% 
@@ -111,9 +111,17 @@ month_year_plot <- month_year %>%
                        "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) +
   ggtitle("Total Calls Per Month", subtitle = "Years 2011-2018") +
-  xlab("Month") +
+  xlab(NULL) +
   ylab("Total Calls")
-div(ggplotly(month_year_plot))  #the div() wrapper from shiny keeps plot centered.  fig.align off with plotly
+
+# div() wrapper from shiny used to center plot when using ggplotly
+# No subtitle in ggplotly, title and subtitle need to be created with HTML 
+div(ggplotly(month_year_plot) %>% 
+      layout(title = list(text = paste0("Total Calls Per Month",
+                                        '<br>',
+                                        '<sup>',
+                                        "Years 2011-2018",
+                                        '</sup>'))))  
 ```
 
 ```{r mean-per-month}
@@ -127,7 +135,7 @@ mean_per_month <- month_year %>%
                                                   'Sep', 'Oct', 'Nov', 'Dec')) %>% 
   rename(' ' = month) %>% 
   t() %>% # transpose the table to get the months horizontial                                          
-  kable(format = 'html') %>% 
+  kable(format = 'html', caption = "Mean calls per month, 2011-2018") %>% 
   kable_styling('striped')
 mean_per_month
 ```
@@ -136,4 +144,4 @@ There are clear seasonal trends in call volumes which could lead to difficulty i
 
 Minimum staffing levels based on the busiest months is probably ideal, however you would only need those employees for the summer months.  The remaining nine months of the year would potentially be overstaffed leading to increased overhead in salary and benefits.  The workload for individual employees would be decreased in the slower months of the year which could lead to an increase in employee morale.
 
-Expanding the pool of available part time employees increases the chances of availabilty to fill open shifts, particularly during the busiest times of the year.  There is less associated overhead as employees are only paid for hours worked with minimal benefit considerations.  To maintain a large intermittent employee population there would potentially need to be a relaxing of current rules that dictate the amount of hours required to work in a specific time period. One of the possible drawbacks of large numbers of part time employees as a solution to increased call volumes include the chance that there aren't enough employees available or willing to cover the necessary shifts to meet demand.
+Expanding the pool of available part time employees increases the chances of availabilty to fill open shifts, particularly during the busiest times of the year.  There is less associated overhead as employees are only paid for hours worked with minimal benefit considerations.  One of the possible drawbacks of large numbers of part time employees as a solution to increased call volumes include the chance that there aren't enough employees available or willing to cover the necessary shifts to meet demand.
