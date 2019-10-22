@@ -12,7 +12,7 @@
 
 
 
-<title>Call Volume Analysis</title>
+<title>About</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -21,17 +21,8 @@
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
-<script src="site_libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
-<script src="site_libs/plotly-binding-4.9.0/plotly.js"></script>
-<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
-<link href="site_libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
-<script src="site_libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
-<link href="site_libs/plotly-htmlwidgets-css-1.46.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="site_libs/plotly-main-1.46.1/plotly-latest.min.js"></script>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -254,9 +245,6 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
 
 
 
@@ -284,10 +272,10 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">About</a>
+  <a href="index.html">Call Volume Analysis</a>
 </li>
 <li>
-  <a href="call-volume.html">Call Volume Analysis</a>
+  <a href="call-volume.html">About</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -299,294 +287,20 @@ $(document).ready(function () {
 
 <div class="fluid-row" id="header">
 
-<div class="btn-group pull-right">
-<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
 
 
-
-<h1 class="title toc-ignore">Call Volume Analysis</h1>
+<h1 class="title toc-ignore">About</h1>
 
 </div>
 
 
-<pre class="r"><code># Total calls in a given year with calculated change in percent from previous year
-calls_per_year&lt;- call_data %&gt;%
-  filter(Year != 2019) %&gt;% #Filtered out, only partial data
-  group_by(Year) %&gt;% 
-  summarise(calls = sum(calls)) %&gt;% 
-  mutate(perc_change = (calls - lag(calls))/lag(calls))
-
-# Minimum and maximum percentage change
-min_max &lt;-calls_per_year %&gt;% 
-  filter(perc_change != &#39;NA&#39;)
-a &lt;- round(max(min_max$perc_change), 4) * 100
-b &lt;- round(min(min_max$perc_change), 4) * 100
-
-# Overall percentage change in calls from 2011 - 2018
-x &lt;-calls_per_year %&gt;% 
-  filter(Year == &#39;2011&#39; | Year == &#39;2018&#39;) %&gt;% 
-  mutate(perc_change = (calls - lag(calls))/lag(calls)) %&gt;% 
-  select(perc_change) %&gt;% 
-  filter(perc_change != &#39;NA&#39;)
-overall &lt;- round(x$perc_change,4) * 100</code></pre>
-<p>According to the US Census Bureau the population in the city of Denver has a growth rate of 1.6% per year and the city has grown by just under 20% since 2010. As a natural consequence of this growth there has also been a steady increase in EMS calls. While the year on year percentage change in call volumes has fluctuated from a maximum growth of 10.77% in 2014 to a minimum rate of 0.16% in 2018, every year has seen positive growth and there has been an overall 39.71% increase in calls from 2011 - 2018.</p>
-<style type="text/css">
-.twoC {width: 100%}
-.clearer {clear: both}
-.twoC .table {max-width: 25%; float: right}
-.twoC img {max-width: 75%; float: left}
-</style>
-<div class = "twoC">
-
-<pre class="r"><code># Commented out code generated the table, code not otherwise shown
-
-#call_data %&gt;% 
-#  group_by(Year) %&gt;% 
-#  filter(Year != 2019) %&gt;% 
-#  summarise(Calls = sum(calls)) %&gt;% 
-#  kable(format = &#39;html&#39;, escape = F) %&gt;% 
-#  kable_styling(&#39;striped&#39;, full_width = T) %&gt;% 
-#  add_header_above(c(&quot; &quot;, &quot;Total Calls &quot;))
-
-# Plot of percentage change in total calls
-cpy_plot &lt;- calls_per_year %&gt;%
- replace_na(list(perc_change = 0)) %&gt;%  #No percentage change in starting year
- ggplot(aes(x = Year, y = perc_change)) +
-  ggtitle(&quot;Percentage Change in Call Volumes&quot;, subtitle = &#39;Year on Year&#39;) + 
-  theme_bw() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5)) +
-  ylab(NULL) +
-  geom_col(fill = &#39;light blue&#39;, color = &#39;black&#39;) +
-  scale_y_continuous(labels = scales::percent) 
-cpy_plot</code></pre>
-<p><img src="call-volume_files/figure-html/perc_plot-1.png" width="672" /></p>
-<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="border-bottom:hidden" colspan="1">
-</th>
-<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="1">
-<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
-Total Calls
-</div>
-</th>
-</tr>
-<tr>
-<th style="text-align:left;">
-Year
-</th>
-<th style="text-align:right;">
-Calls
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-2011
-</td>
-<td style="text-align:right;">
-78262
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2012
-</td>
-<td style="text-align:right;">
-85088
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2013
-</td>
-<td style="text-align:right;">
-87835
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2014
-</td>
-<td style="text-align:right;">
-97293
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2015
-</td>
-<td style="text-align:right;">
-100458
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2016
-</td>
-<td style="text-align:right;">
-106292
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2017
-</td>
-<td style="text-align:right;">
-109164
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2018
-</td>
-<td style="text-align:right;">
-109342
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="clearer">
-
-</div>
-<p>The growth rate in call volumes has slowed in recent years with a negligable increase from 2017 to 2018. Whether or not this will be an ongoing trend remains to be seen. The fact remains there has been an increase in call volumes every year since 2011.</p>
-<p>This growth in call volume will lead to an increased need for emergency medical personnel and the need to schedule that personel efficiently to mitigate the needs of the city.</p>
-<pre class="r"><code># Creates a table with total calls in a given month for each year (not including partial 2019 data)
-month_year &lt;- call_data %&gt;%
-  mutate(year = format(Date, &quot;%Y&quot;), month = format(Date, &quot;%m&quot;)) %&gt;% 
-  filter(year != &#39;2019&#39;) %&gt;% 
-  group_by(year, month) %&gt;% 
-  summarise(calls = sum(calls))
-
-# Changing variable types for plotting.  Year as the factor, month as numeric so ggplot knows to connect lines between months
-month_year$year &lt;- factor(month_year$year)
-month_year$month &lt;- as.numeric(month_year$month)
-
-# Plotting calls by month per year, note year is the factor for coloring the lines
-month_year_plot &lt;- month_year %&gt;% 
-  ggplot() + 
-  theme_bw() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5)) +
-  geom_line(aes(x = month, y = calls, color = year)) +
-  scale_x_continuous(breaks = 1:12, labels = c(
-                       &quot;Jan&quot;, &quot;Feb&quot;, &quot;Mar&quot;, &quot;Apr&quot;, &quot;May&quot;, &quot;Jun&quot;, 
-                       &quot;Jul&quot;, &quot;Aug&quot;, &quot;Sep&quot;, &quot;Oct&quot;, &quot;Nov&quot;, &quot;Dec&quot;)) +
-  ggtitle(&quot;Total Calls Per Month&quot;, subtitle = &quot;Years 2011-2018&quot;) +
-  xlab(&quot;Month&quot;) +
-  ylab(&quot;Total Calls&quot;)
-div(ggplotly(month_year_plot))  #the div() wrapper from shiny keeps plot centered.  fig.align off with plotly</code></pre>
-<div>
-<div id="htmlwidget-a208f2cf14adcdfe939b" style="width:100%;height:400px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a208f2cf14adcdfe939b">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[6050,5662,6200,6152,6495,6806,7188,7492,6948,6685,6099,6485],"text":["month:  1<br />calls: 6050<br />year: 2011","month:  2<br />calls: 5662<br />year: 2011","month:  3<br />calls: 6200<br />year: 2011","month:  4<br />calls: 6152<br />year: 2011","month:  5<br />calls: 6495<br />year: 2011","month:  6<br />calls: 6806<br />year: 2011","month:  7<br />calls: 7188<br />year: 2011","month:  8<br />calls: 7492<br />year: 2011","month:  9<br />calls: 6948<br />year: 2011","month: 10<br />calls: 6685<br />year: 2011","month: 11<br />calls: 6099<br />year: 2011","month: 12<br />calls: 6485<br />year: 2011"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(248,118,109,1)","dash":"solid"},"hoveron":"points","name":"2011","legendgroup":"2011","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[6703,6153,7140,6742,7362,7601,7620,7593,7331,7066,6562,7215],"text":["month:  1<br />calls: 6703<br />year: 2012","month:  2<br />calls: 6153<br />year: 2012","month:  3<br />calls: 7140<br />year: 2012","month:  4<br />calls: 6742<br />year: 2012","month:  5<br />calls: 7362<br />year: 2012","month:  6<br />calls: 7601<br />year: 2012","month:  7<br />calls: 7620<br />year: 2012","month:  8<br />calls: 7593<br />year: 2012","month:  9<br />calls: 7331<br />year: 2012","month: 10<br />calls: 7066<br />year: 2012","month: 11<br />calls: 6562<br />year: 2012","month: 12<br />calls: 7215<br />year: 2012"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(205,150,0,1)","dash":"solid"},"hoveron":"points","name":"2012","legendgroup":"2012","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[7088,6279,7089,7028,7576,7788,7860,8236,7686,7236,6858,7111],"text":["month:  1<br />calls: 7088<br />year: 2013","month:  2<br />calls: 6279<br />year: 2013","month:  3<br />calls: 7089<br />year: 2013","month:  4<br />calls: 7028<br />year: 2013","month:  5<br />calls: 7576<br />year: 2013","month:  6<br />calls: 7788<br />year: 2013","month:  7<br />calls: 7860<br />year: 2013","month:  8<br />calls: 8236<br />year: 2013","month:  9<br />calls: 7686<br />year: 2013","month: 10<br />calls: 7236<br />year: 2013","month: 11<br />calls: 6858<br />year: 2013","month: 12<br />calls: 7111<br />year: 2013"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(124,174,0,1)","dash":"solid"},"hoveron":"points","name":"2013","legendgroup":"2013","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[7448,6946,7835,7666,8662,8448,8867,8730,8665,8365,7479,8182],"text":["month:  1<br />calls: 7448<br />year: 2014","month:  2<br />calls: 6946<br />year: 2014","month:  3<br />calls: 7835<br />year: 2014","month:  4<br />calls: 7666<br />year: 2014","month:  5<br />calls: 8662<br />year: 2014","month:  6<br />calls: 8448<br />year: 2014","month:  7<br />calls: 8867<br />year: 2014","month:  8<br />calls: 8730<br />year: 2014","month:  9<br />calls: 8665<br />year: 2014","month: 10<br />calls: 8365<br />year: 2014","month: 11<br />calls: 7479<br />year: 2014","month: 12<br />calls: 8182<br />year: 2014"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(0,190,103,1)","dash":"solid"},"hoveron":"points","name":"2014","legendgroup":"2014","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[7944,7111,8317,7879,8272,9028,9178,9165,8807,8587,8116,8054],"text":["month:  1<br />calls: 7944<br />year: 2015","month:  2<br />calls: 7111<br />year: 2015","month:  3<br />calls: 8317<br />year: 2015","month:  4<br />calls: 7879<br />year: 2015","month:  5<br />calls: 8272<br />year: 2015","month:  6<br />calls: 9028<br />year: 2015","month:  7<br />calls: 9178<br />year: 2015","month:  8<br />calls: 9165<br />year: 2015","month:  9<br />calls: 8807<br />year: 2015","month: 10<br />calls: 8587<br />year: 2015","month: 11<br />calls: 8116<br />year: 2015","month: 12<br />calls: 8054<br />year: 2015"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(0,191,196,1)","dash":"solid"},"hoveron":"points","name":"2015","legendgroup":"2015","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[8453,8078,8889,8485,9040,9345,9541,9372,9102,9122,8129,8736],"text":["month:  1<br />calls: 8453<br />year: 2016","month:  2<br />calls: 8078<br />year: 2016","month:  3<br />calls: 8889<br />year: 2016","month:  4<br />calls: 8485<br />year: 2016","month:  5<br />calls: 9040<br />year: 2016","month:  6<br />calls: 9345<br />year: 2016","month:  7<br />calls: 9541<br />year: 2016","month:  8<br />calls: 9372<br />year: 2016","month:  9<br />calls: 9102<br />year: 2016","month: 10<br />calls: 9122<br />year: 2016","month: 11<br />calls: 8129<br />year: 2016","month: 12<br />calls: 8736<br />year: 2016"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(0,169,255,1)","dash":"solid"},"hoveron":"points","name":"2016","legendgroup":"2016","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[8880,7773,9044,9007,9377,9667,9842,9746,9284,9342,8470,8732],"text":["month:  1<br />calls: 8880<br />year: 2017","month:  2<br />calls: 7773<br />year: 2017","month:  3<br />calls: 9044<br />year: 2017","month:  4<br />calls: 9007<br />year: 2017","month:  5<br />calls: 9377<br />year: 2017","month:  6<br />calls: 9667<br />year: 2017","month:  7<br />calls: 9842<br />year: 2017","month:  8<br />calls: 9746<br />year: 2017","month:  9<br />calls: 9284<br />year: 2017","month: 10<br />calls: 9342<br />year: 2017","month: 11<br />calls: 8470<br />year: 2017","month: 12<br />calls: 8732<br />year: 2017"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(199,124,255,1)","dash":"solid"},"hoveron":"points","name":"2017","legendgroup":"2017","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[8928,8183,9174,8743,9676,9524,9673,9685,9349,9185,8321,8901],"text":["month:  1<br />calls: 8928<br />year: 2018","month:  2<br />calls: 8183<br />year: 2018","month:  3<br />calls: 9174<br />year: 2018","month:  4<br />calls: 8743<br />year: 2018","month:  5<br />calls: 9676<br />year: 2018","month:  6<br />calls: 9524<br />year: 2018","month:  7<br />calls: 9673<br />year: 2018","month:  8<br />calls: 9685<br />year: 2018","month:  9<br />calls: 9349<br />year: 2018","month: 10<br />calls: 9185<br />year: 2018","month: 11<br />calls: 8321<br />year: 2018","month: 12<br />calls: 8901<br />year: 2018"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(255,97,204,1)","dash":"solid"},"hoveron":"points","name":"2018","legendgroup":"2018","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":43.7625570776256,"r":7.30593607305936,"b":40.1826484018265,"l":54.7945205479452},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"title":{"text":"Total Calls Per Month","font":{"color":"rgba(0,0,0,1)","family":"","size":17.5342465753425},"x":0.5,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.45,12.55],"tickmode":"array","ticktext":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"tickvals":[1,2,3,4,5,6,7,8,9,10,11,12],"categoryorder":"array","categoryarray":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":{"text":"Month","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[5453,10051],"tickmode":"array","ticktext":["6000","7000","8000","9000","10000"],"tickvals":[6000,7000,8000,9000,10000],"categoryorder":"array","categoryarray":["6000","7000","8000","9000","10000"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"Total Calls","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(51,51,51,1)","width":0.66417600664176,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895},"y":0.96751968503937},"annotations":[{"text":"year","x":1.02,"y":1,"showarrow":false,"ax":0,"ay":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xref":"paper","yref":"paper","textangle":-0,"xanchor":"left","yanchor":"bottom","legendTitle":true}],"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","showSendToCloud":false},"source":"A","attrs":{"1aac7e5d58f3":{"x":{},"y":{},"colour":{},"type":"scatter"}},"cur_data":"1aac7e5d58f3","visdat":{"1aac7e5d58f3":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-</div>
-<pre class="r"><code># All calculations and manipulation must be done before transposing for kable output
-mean_per_month &lt;- month_year %&gt;% 
-  group_by(month) %&gt;% 
-  summarise(&#39;Avg. Calls&#39; = round(mean(calls), 0)) %&gt;%
-  # Change month from dbl to factor for naming abbreviated months instead of 1:12
-  mutate_at(vars(month), list(factor), labels = c(&#39;Jan&#39;, &#39;Feb&#39;, &#39;Mar&#39;, &#39;Apr&#39;, 
-                                                  &#39;May&#39;, &#39;Jun&#39;, &#39;Jul&#39;, &#39;Aug&#39;, 
-                                                  &#39;Sep&#39;, &#39;Oct&#39;, &#39;Nov&#39;, &#39;Dec&#39;)) %&gt;% 
-  rename(&#39; &#39; = month) %&gt;% 
-  t() %&gt;% # transpose the table to get the months horizontial                                          
-  kable(format = &#39;html&#39;) %&gt;% 
-  kable_styling(&#39;striped&#39;)
-mean_per_month</code></pre>
-<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
-<tbody>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-Jan
-</td>
-<td style="text-align:left;">
-Feb
-</td>
-<td style="text-align:left;">
-Mar
-</td>
-<td style="text-align:left;">
-Apr
-</td>
-<td style="text-align:left;">
-May
-</td>
-<td style="text-align:left;">
-Jun
-</td>
-<td style="text-align:left;">
-Jul
-</td>
-<td style="text-align:left;">
-Aug
-</td>
-<td style="text-align:left;">
-Sep
-</td>
-<td style="text-align:left;">
-Oct
-</td>
-<td style="text-align:left;">
-Nov
-</td>
-<td style="text-align:left;">
-Dec
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Avg. Calls
-</td>
-<td style="text-align:left;">
-7687
-</td>
-<td style="text-align:left;">
-7023
-</td>
-<td style="text-align:left;">
-7961
-</td>
-<td style="text-align:left;">
-7713
-</td>
-<td style="text-align:left;">
-8308
-</td>
-<td style="text-align:left;">
-8526
-</td>
-<td style="text-align:left;">
-8721
-</td>
-<td style="text-align:left;">
-8752
-</td>
-<td style="text-align:left;">
-8396
-</td>
-<td style="text-align:left;">
-8198
-</td>
-<td style="text-align:left;">
-7504
-</td>
-<td style="text-align:left;">
-7927
-</td>
-</tr>
-</tbody>
-</table>
-<p><br> There are clear seasonal trends in call volumes which could lead to difficulty in optimizing personnel. There is a clear increase in call volumes during the summer months which would suggest an uptick in staffing for that period is appropriate. As staffing paramedics on a seasonal basis is an unrealistic goal, either setting minimum staffing levels based on the busiest months or expansion of the part time employee pool are potential options.</p>
-<p>Minimum staffing levels based on the busiest months is probably ideal, however you would only need those employees for the summer months. The remaining nine months of the year would potentially be overstaffed leading to increased overhead in salary and benefits. The workload for individual employees would be decreased in the slower months of the year which could lead to an increase in employee morale.</p>
-<p>Expanding the pool of available part time employees increases the chances of availabilty to fill open shifts, particularly during the busiest times of the year. There is less associated overhead as employees are only paid for hours worked with minimal benefit considerations. To maintain a large intermittent employee population there would potentially need to be a relaxing of current rules that dictate the amount of hours required to work in a specific time period. One of the possible drawbacks of large numbers of part time employees as a solution to increased call volumes include the chance that there aren’t enough employees available or willing to cover the necessary shifts to meet demand.</p>
+<p>Analysis of the Denver Health Paramedics call volumes from 2010 - 2018. The available call volume data includes the total ammount of 911 ambulance calls over any given hour within the specified years. This data only includes 911 calls within the city and county of Denver. The Denver Health Paramedics are also the primary ALS providers for the cities of Sheridan, Glendale, Englewood, and the Skyline Fire Protection District. For more information about the Denver Health Paramedic Division visit <a href="www.denverhealthparamedics.org">denverhealthparamedics.org</a>.</p>
+<hr />
+<p>This is an extension of a collaborative project, created for additional data analysis. Project details, including the data set used, can be viewed on <a href="https://github.com/ChrisELarson/DenverEMS">GitHub</a>.</p>
+<hr />
+<p>Data analysis and modeling using <a href="https://www.r-project.org">R statistical software</a>.</p>
+<hr />
+<p>Planned further development: - Continued Volume Analysis - Further exploration of predictive models - Time series analysis</p>
 
 
 
@@ -621,11 +335,6 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
-<script>
-$(document).ready(function () {
-  window.initializeCodeFolding("hide" === "show");
-});
-</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
