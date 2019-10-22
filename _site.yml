@@ -3,7 +3,7 @@ output_dir: "docs"
 navbar:
   title: "Denver EMS"
   left:
-    - text: "About"
-      href: index.html
     - text: "Call Volume Analysis"
+      href: index.html
+    - text: "About"
       href: call-volume.html
