@@ -11,6 +11,8 @@ library(ggplot2)
 library(plotly)
 library(kableExtra) #nicer tables
 library(shiny)
+library(lubridate)
+library(tibbletime)
 
 load("C:/Users/ADMIN/Desktop/GitRepos/DenverEMS/call_data.Rdata")
 ```
@@ -145,3 +147,53 @@ There are clear seasonal trends in call volumes which could lead to difficulty i
 Minimum staffing levels based on the busiest months is probably ideal, however you would only need those employees for the summer months.  The remaining nine months of the year would potentially be overstaffed leading to increased overhead in salary and benefits.  The workload for individual employees would be decreased in the slower months of the year which could lead to an increase in employee morale.
 
 Expanding the pool of available part time employees increases the chances of availabilty to fill open shifts, particularly during the busiest times of the year.  There is less associated overhead as employees are only paid for hours worked with minimal benefit considerations.  One of the possible drawbacks of large numbers of part time employees as a solution to increased call volumes include the chance that there aren't enough employees available or willing to cover the necessary shifts to meet demand.
+
+```{r weekday}
+# I needed to change the format to get a sum of the calls by date, date(Date) is the row
+# The sum collected first, before extracting weekday to get the mean of the total
+weekday<- call_data %>% 
+  filter(Year != 2019) %>% 
+  select(calls, wday, Date) %>%
+  mutate(date_col = date(Date)) %>% 
+  group_by(date_col) %>% 
+  summarise(tot = sum(calls)) %>% 
+  mutate(date_day = wday(date_col, label = TRUE)) %>% # label give abbr weekday name
+  group_by(date_day) %>% 
+  summarise(mean = ceiling(mean(tot))) %>% 
+  rename(' ' = date_day) %>% 
+  rename('Avg. calls' = mean) %>% 
+  t() %>% 
+  kable(format = 'html', caption = "Mean calls per day, 2011-2018") %>% 
+  kable_styling('striped')
+weekday
+```
+
+ 
+```{r byhour, fig.show= "hold", out.width= "50%"}
+tot_by_hour <- call_data %>% 
+  filter(Year != 2019) %>% 
+  group_by(Hour) %>% 
+  summarise(calls = sum(calls)) %>% 
+  ggplot(aes(x = Hour, y = calls)) +
+  geom_col(fill = 'Orange', color = 'black') +
+  ggtitle("Total Calls by Hour", subtitle = '2011-2018') +
+  ylab('Total Calls') +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+tot_by_hour
+
+mean_hour <- call_data %>% 
+  filter(Year != 2019) %>% 
+  group_by(Hour) %>% 
+  summarise(calls = mean(calls)) %>% 
+  ggplot(aes(x = Hour, y = calls)) +
+  geom_col(fill = 'lightblue', color = 'black') +
+  ggtitle("Mean Calls per Hour", subtitle = '2011-2018') +
+  ylab('Avg. Calls per Hour') +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+mean_hour
+```
+
+
+The data show the volume of calls stays fairly consistent throughout each day of the week, with a slight uptick in volume on Fridays and Saturdays.  There are significant differences in call volumes throughout the day. On average call volumes are lower in the late evening and early morning hours before steadily increasing, with peak call volumes between 2:00 and 6:00pm.
