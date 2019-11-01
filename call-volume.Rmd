@@ -14,6 +14,7 @@ Data analysis and modeling using [R statistical software](https://www.r-project.
 ---
 
 Planned further development:
-  - Continued Volume Analysis
-  - Further exploration of predictive models
-  - Time series analysis
+
+- Continued Volume Analysis
+- Further exploration of predictive models
+- Time series analysis
