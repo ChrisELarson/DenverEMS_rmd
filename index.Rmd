@@ -3,6 +3,7 @@ title: "Call Volume Analysis"
 output:
   html_document:
     code_folding: hide
+runtime: shiny
 ---
 ```{r setup, include=FALSE}
 # Libraries and loading data
@@ -197,3 +198,46 @@ mean_hour
 
 
 The data show the volume of calls stays fairly consistent throughout each day of the week, with a slight uptick in volume on Fridays and Saturdays.  There are significant differences in call volumes throughout the day. On average call volumes are lower in the late evening and early morning hours before steadily increasing, with peak call volumes between 2:00 and 6:00pm.
+
+```{r hranalysis}
+# create data set for overall mean calls per hour, Hour needs change to numeric for ggplot
+num_hr <- call_data %>% 
+  filter(Year != 2019) %>% 
+  group_by(Hour) %>% 
+  summarise(calls = ceiling(mean(calls)))
+num_hr$Hour <- as.numeric(num_hr$Hour)
+
+# Mean calls per hour of specific day vs. overall mean calls per hour
+mean_day <- call_data %>%  
+  filter(Year != 2019, wday == 'Fri') %>% 
+  group_by(Hour) %>% 
+  summarise(calls = ceiling(mean(calls))) %>%
+  ggplot(aes(x = Hour, y = calls)) +
+  geom_col(fill = 'lightblue', color = 'black') +
+  geom_line(data = num_hr, aes(x = Hour, y = calls), color = 'red')
+mean_day
+
+```
+
+inline shiny
+```{r try}
+selectInput('weekday', 'Day:',
+            choices = unique(call_data$wday),
+            selected = 'Sun')
+
+mean_plot <- reactive( 
+    call_data %>%
+      filter(Year != 2019) %>% 
+      select(calls, wday, Hour) %>% 
+      filter(wday == input$weekday) %>% 
+      group_by(Hour) %>% 
+      summarise(calls = ceiling(mean(calls))) %>% 
+      ggplot(aes(x = Hour, y = calls)) +
+      geom_col(fill = 'lightblue', color = 'black') +
+      geom_line(data = num_hr, aes(x = Hour, y = calls), color = 'red') 
+    
+)
+
+renderPlotly(mean_plot())
+```
+
