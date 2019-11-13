@@ -5,7 +5,7 @@ Analysis of the Denver Health Paramedics call volumes from 2010 - 2018.  The ava
 
 ---
 
-This is an extension of a collaborative project, created for additional data analysis.  Project details, including the data set used, can be viewed on [GitHub](https://github.com/ChrisELarson/DenverEMS).    
+This is an extension of a collaborative project, created for additional analysis and coding examples.  Project details, including the data set used, can be viewed on [GitHub](https://github.com/ChrisELarson/DenverEMS).    
 
 ---
 

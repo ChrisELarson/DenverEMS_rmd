@@ -148,6 +148,8 @@ Minimum staffing levels based on the busiest months is probably ideal, however y
 
 Expanding the pool of available part time employees increases the chances of availabilty to fill open shifts, particularly during the busiest times of the year.  There is less associated overhead as employees are only paid for hours worked with minimal benefit considerations.  One of the possible drawbacks of large numbers of part time employees as a solution to increased call volumes include the chance that there aren't enough employees available or willing to cover the necessary shifts to meet demand.
 
+Changes in EMS call volumes are not confined to seasonality, differences exist between the days of the week and hour of the day. The Denver Health Paramedics currently schedule shifts in 10 hour blocks and have to disperse EMS crews effeciently.
+
 ```{r weekday}
 # I needed to change the format to get a sum of the calls by date, date(Date) is the row
 # The sum collected first, before extracting weekday to get the mean of the total
@@ -196,7 +198,7 @@ mean_hour
 ```
 
 
-The data show the volume of calls stays fairly consistent throughout each day of the week, with a slight uptick in volume on Fridays and Saturdays.  There are significant differences in call volumes throughout the day. On average call volumes are lower in the late evening and early morning hours before steadily increasing, with peak call volumes between 2:00 and 6:00pm.
+The data show the volume of calls stays fairly consistent throughout each day of the week, with a slight uptick in volume on Fridays and Saturdays.  There are significant differences in call volumes throughout the day. On average call volumes are lower in the late evening and early morning hours before steadily increasing, with peak call volumes between 2:00 and 6:00pm. This suggests a higher concentration of shifts around the 10:00am to 8:00pm range would be beneficial.
 
 ```{r hranalysis, out.width="100%"}
 #################################################################################
