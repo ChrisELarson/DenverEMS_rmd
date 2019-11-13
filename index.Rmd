@@ -199,7 +199,7 @@ mean_hour
 The data show the volume of calls stays fairly consistent throughout each day of the week, with a slight uptick in volume on Fridays and Saturdays.  There are significant differences in call volumes throughout the day. On average call volumes are lower in the late evening and early morning hours before steadily increasing, with peak call volumes between 2:00 and 6:00pm.
 
 ```{r hranalysis, out.width="100%"}
-knitr::include_app("https://chriselarson.shinyapps.io/calls_by_day/", height = '400px' )
+knitr::include_app("https://chriselarson.shinyapps.io/calls_by_day/", height = '500px' )
 # Commented out code was used to create selectable input plot in rshiny
 
 #library(shiny)
@@ -260,7 +260,7 @@ knitr::include_app("https://chriselarson.shinyapps.io/calls_by_day/", height = '
 
 
 ```
-<iframe src="https://chriselarson.shinyapps.io/calls_by_day/" style="border: none; width: 75%; height: 500px" >
+<iframe src="https://chriselarson.shinyapps.io/calls_by_day/" style="border: none; width: 100%; height: 500px" >
 </iframe>
 
 
