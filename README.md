@@ -1,4 +1,6 @@
 # DenverEMS
-For hosting website with further analysis.  Built with R using .Rmd files.
+Extension of collaborative project. 
+- [GitHub](https://github.com/ChrisELarson/DenverEMS)
 
- https://chriselarson.github.io/DenverEMS_rmd/
+For hosting website with further analysis and coding examples.  Built with R using .Rmd files.
+- https://chriselarson.github.io/DenverEMS_rmd/
