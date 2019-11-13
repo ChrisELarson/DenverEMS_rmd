@@ -263,5 +263,8 @@ The data show the volume of calls stays fairly consistent throughout each day of
 ```
 <iframe src="https://chriselarson.shinyapps.io/calls_by_day/" style="border: none; width: 100%; height: 500px" >
 </iframe>
+<br>
+Most hours call volumes appear to run near historical averages with some days having hours that are significantly higher than average. In particular the weekend evening hours are consistently higher than historic norms.  From 10:00pm Friday night until 3:00am Saturday morning and 8:00pm Saturday night until 4:00am Sunday morning are noticeably busier than average.  This could suggest significant impact on EMS call volumes due to increased alcohol consumption as these are typically "party hours" that coincide with bar hours.  The data also show slight increases in call volume from the norm during the weekday morning commute hours.  
 
+The data suggest that increased staffing for the night shifts on Friday and Saturday nights would be appropriate.
 
