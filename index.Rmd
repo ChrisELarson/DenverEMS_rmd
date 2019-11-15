@@ -264,8 +264,7 @@ The data show the average daily volume of calls stays fairly consistent througho
 # Run the application 
 #shinyApp(ui = ui, server = server)
 ```
-<iframe src="https://chriselarson.shinyapps.io/calls_by_day/" style="border: none; width: 100%; height: 500px" >
+<iframe src="https://chriselarson.shinyapps.io/calls_by_day/" style="border: none; width: 100%; height: 300px" >
 </iframe>
-<br>
 Most hours call volumes appear to run near historical averages with some days having hours that are significantly higher than average. In particular the weekend evening hours are consistently higher than historic norms.  From 10:00pm Friday night until 3:00am Saturday morning and 8:00pm Saturday night until 4:00am Sunday morning are noticeably busier than average.  The data also show slight increases in call volume from the norm during the weekday morning commute hours.  Increased staffing in the late evening and overnight hours for Friday and Saturday is recommended.
 
