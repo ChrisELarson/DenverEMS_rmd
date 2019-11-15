@@ -5,7 +5,9 @@ Analysis of the Denver Health Paramedics call volumes from 2010 - 2018.  The ava
 
 ---
 
-This is an extension of a collaborative project, created for additional analysis and coding examples.  Project details, including the data set used, can be viewed on [GitHub](https://github.com/ChrisELarson/DenverEMS).    
+This is an extension of a collaborative project, created for additional analysis and coding examples.  Project details, including the data set used, can be viewed on [GitHub](https://github.com/ChrisELarson/DenverEMS).
+
+The raw files for this website can also be viewed on [GitHub](https://github.com/ChrisELarson/DenverEMS_rmd).
 
 ---
 
@@ -16,5 +18,5 @@ Data analysis and modeling using [R statistical software](https://www.r-project.
 Planned further development:
 
 - Continued Volume Analysis
-- Further exploration of predictive models
+- Predictive model used
 - Time series analysis
