@@ -159,46 +159,47 @@ weekday<- call_data %>%
   mutate(date_col = date(Date)) %>% 
   group_by(date_col) %>% 
   summarise(tot = sum(calls)) %>% 
-  mutate(date_day = wday(date_col, label = TRUE)) %>% # label give abbr weekday name
-  group_by(date_day) %>% 
-  summarise(mean = ceiling(mean(tot))) %>% 
-  rename(' ' = date_day) %>% 
-  rename('Avg. calls' = mean) %>% 
+  mutate(date_day = wday(date_col, label = TRUE)) %>% # label gives abbr weekday name
+  group_by(date_day) %>%
+  summarise(mean = ceiling(mean(tot)), total = sum(tot)) %>% #ceiling used to round all values up
+  rename(' ' = date_day, 'Avg. calls' = mean, 'Total Calls' = total) %>% 
   t() %>% 
-  kable(format = 'html', caption = "Mean calls per day, 2011-2018") %>% 
+  kable(format = 'html', caption = "Call Volumes By Day, 2011-2018") %>% 
   kable_styling('striped')
 weekday
 ```
 
  
-```{r byhour, fig.show= "hold", out.width= "50%"}
-tot_by_hour <- call_data %>% 
-  filter(Year != 2019) %>% 
-  group_by(Hour) %>% 
-  summarise(calls = sum(calls)) %>% 
-  ggplot(aes(x = Hour, y = calls)) +
-  geom_col(fill = 'Orange', color = 'black') +
-  ggtitle("Total Calls by Hour", subtitle = '2011-2018') +
-  ylab('Total Calls') +
-  theme_bw() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
-tot_by_hour
+```{r byhour, fig.show= "hold", out.width= "75%", out.extra='style="float:left; padding:10px"'}
 
+
+a <- ifelse(call_data$Hour == 12, 'red', 'black') #used for color argument to make the noon hour red
 mean_hour <- call_data %>% 
   filter(Year != 2019) %>% 
   group_by(Hour) %>% 
   summarise(calls = mean(calls)) %>% 
   ggplot(aes(x = Hour, y = calls)) +
-  geom_col(fill = 'lightblue', color = 'black') +
-  ggtitle("Mean Calls per Hour", subtitle = '2011-2018') +
-  ylab('Avg. Calls per Hour') +
+  scale_x_discrete(labels = c('0' = 'Midnight', '1' = '1a', '2' = '2a', '3' = '3a', '4' = '4a', '5' = '5a', 
+                              '6' = '6a', '7' = '7a', '8' = '8a', '9' = '9a', '10' = '10a', '11' = '11a', 
+                              '13' = '1p', '14' = '2p', '15' = '3p', '16' = '4p', '17' = '5p', '18'= '6p',
+                              '12' = 'Noon','19'= '7p', '20' = '8p', '21' = '9p', '22' = '10p', 
+                              '23' = '11p')) +
+  geom_point(size = 3) +
+  geom_segment(aes(x = Hour,
+               xend = Hour,
+               y = 0,
+               yend = calls)) +
+  labs(title = 'Mean Calls per Hour',
+       subtitle = '2011-2018',
+       y = 'Avg. Calls per Hour') +
   theme_bw() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 45, hjust = 1, color = a))
 mean_hour
 ```
 
-
-The data show the volume of calls stays fairly consistent throughout each day of the week, with a slight uptick in volume on Fridays and Saturdays.  There are significant differences in call volumes throughout the day. On average call volumes are lower in the late evening and early morning hours before steadily increasing, with peak call volumes between 2:00 and 6:00pm. This suggests a higher concentration of shifts around the 10:00am to 8:00pm range would be beneficial.
+<br><br><br>
+The data show the average daily volume of calls stays fairly consistent throughout each day of the week, with a slight uptick in volume on Fridays and Saturdays. However, the average call volumes are significantly different depending on the hour of the day, indicating optimal scheduling should be based more on time of day than day of week.  On average, call volumes are lower in the late evening and early morning hours before steadily increasing, with peak call volumes between 2:00 and 6:00pm. This suggests a higher concentration of shifts in the 10:00am to 8:00pm range would be beneficial.
 
 ```{r hranalysis, out.width="100%"}
 #################################################################################
@@ -266,7 +267,5 @@ The data show the volume of calls stays fairly consistent throughout each day of
 <iframe src="https://chriselarson.shinyapps.io/calls_by_day/" style="border: none; width: 100%; height: 500px" >
 </iframe>
 <br>
-Most hours call volumes appear to run near historical averages with some days having hours that are significantly higher than average. In particular the weekend evening hours are consistently higher than historic norms.  From 10:00pm Friday night until 3:00am Saturday morning and 8:00pm Saturday night until 4:00am Sunday morning are noticeably busier than average.  This could suggest significant impact on EMS call volumes due to increased alcohol consumption as these are typically "party hours" that coincide with bar hours.  The data also show slight increases in call volume from the norm during the weekday morning commute hours.  
-
-The data suggest that increased staffing for the night shifts on Friday and Saturday nights would be appropriate.
+Most hours call volumes appear to run near historical averages with some days having hours that are significantly higher than average. In particular the weekend evening hours are consistently higher than historic norms.  From 10:00pm Friday night until 3:00am Saturday morning and 8:00pm Saturday night until 4:00am Sunday morning are noticeably busier than average.  The data also show slight increases in call volume from the norm during the weekday morning commute hours.  Increased staffing in the late evening and overnight hours for Friday and Saturday is recommended.
 
