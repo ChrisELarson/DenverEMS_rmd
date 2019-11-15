@@ -222,7 +222,7 @@ The data show the average daily volume of calls stays fairly consistent througho
 #    summarise(calls = mean(calls))
 #num_hr$Hour <- as.numeric(num_hr$Hour)
 
-#ui <- fillPage(
+#ui <- fluidPage(
 #    sidebarPanel(
 #        selectInput('weekday', strong('Day:'),
 #                choices = #unique(call_data$wday), #Works, gives abbreviation in dropdown
@@ -259,12 +259,9 @@ The data show the average daily volume of calls stays fairly consistent througho
 #    })
     
 #}
-
-
 # Run the application 
 #shinyApp(ui = ui, server = server)
 ```
-<iframe src="https://chriselarson.shinyapps.io/calls_by_day/" style="border: none; width: 100%; height: 300px" >
+<iframe src="https://chriselarson.shinyapps.io/calls_by_day/" style="border: none; width: 100%; height: 400px" >
 </iframe>
 Most hours call volumes appear to run near historical averages with some days having hours that are significantly higher than average. In particular the weekend evening hours are consistently higher than historic norms.  From 10:00pm Friday night until 3:00am Saturday morning and 8:00pm Saturday night until 4:00am Sunday morning are noticeably busier than average.  The data also show slight increases in call volume from the norm during the weekday morning commute hours.  Increased staffing in the late evening and overnight hours for Friday and Saturday is recommended.
-
