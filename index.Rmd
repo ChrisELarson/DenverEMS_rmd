@@ -221,7 +221,7 @@ The data show the volume of calls stays fairly consistent throughout each day of
 #    summarise(calls = mean(calls))
 #num_hr$Hour <- as.numeric(num_hr$Hour)
 
-#ui <- fluidPage(
+#ui <- fillPage(
 #    sidebarPanel(
 #        selectInput('weekday', strong('Day:'),
 #                choices = #unique(call_data$wday), #Works, gives abbreviation in dropdown
